@@ -3,7 +3,7 @@ import json
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import router
+from app.core.api import router
 from app.core.config import get_config
 
 config = get_config()

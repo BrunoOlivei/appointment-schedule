@@ -11,9 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from app.core.config import get_config
 
 config = get_config()
-print(config.MYSQL_DATABASE_URI)
 engine: AsyncEngine = create_async_engine(config.MYSQL_DATABASE_URI, echo=True)
-
 Session = sessionmaker(
     bind=engine, class_=AsyncSession, expire_on_commit=False
 )

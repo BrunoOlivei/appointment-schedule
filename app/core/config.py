@@ -54,11 +54,30 @@ class Settings(BaseSettings):
     POSTGRESQL_PWD: str = ""
     POSTGRESQL_DB: str = ""
 
-    SQL_SERVER_USR: str = ""
-    SQL_SERVER_PWD: str = ""
-    SQL_SERVER_HOST: str = ""
-    SQL_SERVER_PORT: str = ""
-    SQL_SERVER_DB: str = ""
+    SQL_SERVER_USR: str = "qyon_bank"
+    SQL_SERVER_PWD: str = "Qyon@@2010"
+    SQL_SERVER_HOST: str = "crm.geiko.com.br"
+    SQL_SERVER_PORT: str = "1433"
+    SQL_SERVER_DB: str = "CRM_0044"
+
+    SQL_SERVER_DATABASE_URI: Optional[URL] = None
+
+    @validator("SQL_SERVER_DATABASE_URI", pre=True)
+    def assemble_sql_server_connection(
+        cls,
+        v: Optional[str],
+        values: dict[str, Any]
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        return URL.create(
+                "mssql+pyodbc",
+                username=values.get("SQL_SERVER_USR"),
+                password=values.get("SQL_SERVER_PWD"),
+                host=values.get("SQL_SERVER_HOST"),
+                port=values.get("SQL_SERVER_PORT"),
+                database=values.get("SQL_SERVER_DB"),
+        )
 
     RABBIT_ENVIRON: str = ""
     RABBIT_EXCHANGE: str = ""

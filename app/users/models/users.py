@@ -1,4 +1,3 @@
-from typing import Optional, List
 from datetime import datetime
 from uuid import uuid4
 
@@ -10,7 +9,7 @@ from sqlalchemy import (
     PrimaryKeyConstraint
 )
 from sqlalchemy.orm import (
-    Mapped, mapped_column, relationship,
+    Mapped, mapped_column
 )
 
 from app.core.models.base import Base
@@ -44,18 +43,14 @@ class Users(Base):
         onupdate=datetime.utcnow
     )
     deleted_at: Mapped[datetime] = mapped_column(DateTime, nullable=True)
-    permissions: Mapped[Optional[List]] = relationship(
-        "Permission",
-        secondary="permissons.permission_users",
-        back_populates="user",
-        # primaryjoin="Users.id == PermissionUser.id_user",
-    )
+    # permissions: Mapped[Optional[List]] = relationship(
+    #     "Permission",
+    #     secondary="permissons.permission_users",
+    #     back_populates="user",
+    #     # primaryjoin="Users.id == PermissionUser.id_user",
+    # )
 
-    def __repr__(self) -> str:
-        return f"<Users id={self.id}>, crm_user_id={self.crm_user_id},\
-              name={self.name}, mail={self.mail}, created_at={self.created_at}"
-
-    def to_dict(self):
+    def dict(self):
         return {
             "id": str(self.id),
             "crm_user_id": self.crm_user_id,
@@ -63,3 +58,7 @@ class Users(Base):
             "mail": self.mail,
             "is_active": self.is_active,
         }
+
+    def __repr__(self) -> str:
+        return f"<Users id={self.id}>, crm_user_id={self.crm_user_id},\
+              name={self.name}, mail={self.mail}, created_at={self.created_at}"

@@ -18,4 +18,4 @@ class BaseInDB(BaseModel):
 
 
 class BaseUpdate(BaseInDB):
-    id: int
+    id: str

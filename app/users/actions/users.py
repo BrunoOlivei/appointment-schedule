@@ -6,13 +6,9 @@ from app.core.actions.constants import (
     GET_MULTI_DEFAULT_LIMIT
 )
 from app.users.models.users import Users
-from app.crm.service.users_crm_id import CRMUserId
 from app.users.models.permissions import Permission
 from app.users.schemas.users import (
     UserInDB,
-    User as UserSchema,
-    UserCreate,
-    UserList,
 )
 
 

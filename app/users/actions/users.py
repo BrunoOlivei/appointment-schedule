@@ -6,6 +6,14 @@ from app.core.actions.constants import (
     GET_MULTI_DEFAULT_LIMIT
 )
 from app.users.models.users import Users
+from app.crm.service.users_crm_id import CRMUserId
+from app.users.models.permissions import Permission
+from app.users.schemas.users import (
+    UserInDB,
+    User as UserSchema,
+    UserCreate,
+    UserList,
+)
 
 
 class UsersActions:
@@ -38,15 +46,22 @@ class UsersActions:
             query_filter=Users.email == email
         )
 
-    # async def create_user(
-    #     self,
-    #     session: AsyncSession,
-    #     *,
-    #     user_in: UserInDB
-    # ) -> Users:
-    #     users_permissins: list[Permission] = await
-    #     return await self._repo.create(
-    #         session,
-    #         table_model=Users,
-    #         data=user_in
-    #     )
+    async def create_user(
+        self,
+        session: AsyncSession,
+        *,
+        user_in: UserInDB
+    ) -> Users:
+        permissions: list[Permission] = await self._repo.get_multi(
+            session,
+            table_model=Permission
+        )
+        permissions_names = [permission.name for permission in permissions]
+        if user_in.permissions:
+            for permission in user_in.permissions:
+                if permission.name not in permissions_names:
+                    raise Exception("Permission not found")
+        return await self._repo.create(
+            session,
+            obj_to_create=user_in,
+        )

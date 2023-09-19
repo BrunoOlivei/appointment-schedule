@@ -54,11 +54,11 @@ class Settings(BaseSettings):
     POSTGRESQL_PWD: str = ""
     POSTGRESQL_DB: str = ""
 
-    SQL_SERVER_USR: str = "qyon_bank"
-    SQL_SERVER_PWD: str = "Qyon@@2010"
-    SQL_SERVER_HOST: str = "crm.geiko.com.br"
-    SQL_SERVER_PORT: str = "1433"
-    SQL_SERVER_DB: str = "CRM_0044"
+    SQL_SERVER_USR: str = ""
+    SQL_SERVER_PWD: str = ""
+    SQL_SERVER_HOST: str = ""
+    SQL_SERVER_PORT: str = ""
+    SQL_SERVER_DB: str = ""
 
     SQL_SERVER_DATABASE_URI: Optional[URL] = None
 
@@ -77,6 +77,10 @@ class Settings(BaseSettings):
                 host=values.get("SQL_SERVER_HOST"),
                 port=values.get("SQL_SERVER_PORT"),
                 database=values.get("SQL_SERVER_DB"),
+                query=dict(
+                    driver='ODBC Driver 18 for SQL Server',
+                    TrustServerCertificate="yes",
+                    Encrypt="no")
         )
 
     RABBIT_ENVIRON: str = ""

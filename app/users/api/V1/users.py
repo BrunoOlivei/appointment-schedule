@@ -4,13 +4,13 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession  # type: ignore
 from pydantic import conint
 
-from app.core.database.db import get_async_session
+# from app.core.database.db import get_async_session
 from app.core.database.db import Session
 from app.utils.response import Responses
 from app.crm.service.users_crm_id import CRMUserId
 from app.users.schemas.users import User, UserBase, UserInDB
 from app.users.actions.users import UsersActions
-from app.users.actions import (
+from app.core.actions import (
     GET_MULTI_DEFAULT_SKIP,
     GET_MULTI_DEFAULT_LIMIT,
     MAX_POSTGRES_INTEGER,
@@ -62,13 +62,13 @@ async def get_schedules(
 )
 async def create_user(
     user_in: UserBase,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(async_session.get_async_session),
 ) -> User:
     user_in = UserInDB(
         id=str(uuid4()),
-        crm_user_id=CRMUserId(user_in.crm_user_id).get_user_id(),
+        crm_user_id=CRMUserId(user_in.mail).get_user_id(),
         name=user_in.name,
-        email=user_in.email,
+        mail=user_in.mail,
         is_active=True,
         created_at=datetime.now(),
         updated_at=datetime.now(),

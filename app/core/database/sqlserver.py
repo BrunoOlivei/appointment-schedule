@@ -28,6 +28,3 @@ class SQLServer:
     def get_table_columns_type(self, table_name: str):
         table = self.get_table(table_name)
         return table.columns.type
-
-    
-

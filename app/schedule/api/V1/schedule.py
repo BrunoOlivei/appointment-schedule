@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession  # type: ignore
 from pydantic import conint
 
-from app.core.db import get_async_session
+from app.core.database.db import get_async_session
 from app.utils.response import Responses
 from app.schedule.schemas.schedule import Schedule
 from app.schedule.actions.schedule import ScheduleActions

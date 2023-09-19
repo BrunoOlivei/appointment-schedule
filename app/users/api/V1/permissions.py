@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession  # type: ignore
 from pydantic import conint
 
-from app.core.db import get_async_session
+from app.core.database.db import get_async_session
+from app.core.database.db import Session
 from app.utils.response import Responses
 from app.users.schemas.permissions import (
-    Permission, PermissionBase, PermissionInDB
+    Permission, PermissionBase, PermissionInDB, PermissionUpdateActive
 )
 from app.users.actions.permissions import PermissionActions
 from app.core.actions import (
@@ -16,9 +17,11 @@ from app.core.actions import (
     MAX_POSTGRES_INTEGER,
 )
 
+async_session = Session(driver="mysql")
+
 router = APIRouter(
     prefix="/permission",
-    dependencies=[Depends(get_async_session)],
+    dependencies=[Depends(async_session.get_async_session)],
     tags=["permission"]
 )
 
@@ -33,14 +36,14 @@ router = APIRouter(
 async def get_permissions(
     skip: conint(ge=0, le=MAX_POSTGRES_INTEGER) = GET_MULTI_DEFAULT_SKIP,
     limit: conint(ge=0, le=MAX_POSTGRES_INTEGER) = GET_MULTI_DEFAULT_LIMIT,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(async_session.get_async_session),
 ) -> list[Permission]:
     try:
         dataset = await PermissionActions().get_permissions(
             session=session, skip=skip, limit=limit
         )
     except Exception as e:
-        raise e
+        return Responses.ResponseError(data=e)
     else:
         dataset = [item.dict() for item in dataset]
         return Responses.ResponseOk(data=dataset)
@@ -59,7 +62,7 @@ async def get_permissions(
 )
 async def create_permission(
     permission_in: PermissionBase,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(async_session.get_async_session),
 ) -> Permission:
     permission_in = PermissionInDB(
         id=str(uuid4()),
@@ -73,6 +76,33 @@ async def create_permission(
             session=session, permission_in=permission_in
         )
     except Exception as e:
-        raise e
+        return Responses.ResponseError(data=e)
+    else:
+        return Responses.ResponseOk(data=dataset.dict())
+
+
+@router.put(
+    "",
+    response_model=Permission,
+    status_code=status.HTTP_200_OK,
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"},
+        status.HTTP_400_BAD_REQUEST: {
+            "description": "Bad Request",
+        }
+    },
+)
+async def update_permission(
+    permission_in: PermissionUpdateActive,
+    session: AsyncSession = Depends(get_async_session),
+) -> Permission:
+
+    try:
+        dataset = await PermissionActions().update_permission(
+            session=session,
+            permission_in=permission_in
+        )
+    except Exception as e:
+        return Responses.ResponseError(data=e)
     else:
         return Responses.ResponseOk(data=dataset.dict())

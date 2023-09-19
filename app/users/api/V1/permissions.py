@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession  # type: ignore
 from pydantic import conint
 
-from app.core.database.db import get_async_session
 from app.core.database.db import Session
 from app.utils.response import Responses
 from app.users.schemas.permissions import (
@@ -94,7 +93,7 @@ async def create_permission(
 )
 async def update_permission(
     permission_in: PermissionUpdateActive,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession = Depends(async_session.get_async_session),
 ) -> Permission:
 
     try:

@@ -32,3 +32,10 @@ class Responses(Response):
         response.success = False
         response.message = message
         return response
+    
+    def ResponseBadRequest(message: str = "Bad Request"):
+        response = ResponseData()
+        response.code = status.HTTP_400_BAD_REQUEST
+        response.success = False
+        response.message = message
+        return response

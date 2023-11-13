@@ -7,7 +7,7 @@ from sqlalchemy.engine import URL
 
 
 class Settings(BaseSettings):
-    TITLE: str = "QYON CS-Progress"
+    TITLE: str = "DIB Scheduler"
     VERSION: str = "1.0"
     TIMEZONE: str = "utc-3"
     DESCRIPTION: str | None = None
@@ -27,43 +27,16 @@ class Settings(BaseSettings):
     # e.g:  'http://localhost:8080;http://localhost:3000'
     # CORS_ORIGINS: list[AnyHttpUrl]
 
-    MYSQL_HOST: str = "localhost"
-    MYSQL_PORT: int = 3306
-    MYSQL_PWS: str = "mauFJcuf5dhRMQrjj"
-    MYSQL_USER: str = "example"
-    MYSQL_DB: str = "csprogress"
+    POSTGRESQL_URI: str
+    POSTGRESQL_USR: str
+    POSTGRESQL_PWD: str
+    POSTGRESQL_PORT: int = 5432
+    POSTGRESQL_DB: str
 
-    MYSQL_DATABASE_URI: Optional[URL] = None
+    POSTGRESQL_DATABASE_URI: Optional[URL] = None
 
-    @validator("MYSQL_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str],
-                               values: dict[str, Any]) -> Any:
-        if isinstance(v, str):
-            return v
-        return URL.create(
-            "mysql+asyncmy",
-            username=values.get("MYSQL_USER"),
-            password=values.get("MYSQL_PWS"),
-            host=values.get("MYSQL_HOST"),
-            port=values.get("MYSQL_PORT"),
-            database=values.get("MYSQL_DB"),
-        )
-
-    POSTGRESQL_URI: str = ""
-    POSTGRESQL_USR: str = ""
-    POSTGRESQL_PWD: str = ""
-    POSTGRESQL_DB: str = ""
-
-    SQL_SERVER_USR: str = ""
-    SQL_SERVER_PWD: str = ""
-    SQL_SERVER_HOST: str = ""
-    SQL_SERVER_PORT: str = ""
-    SQL_SERVER_DB: str = ""
-
-    SQL_SERVER_DATABASE_URI: Optional[URL] = None
-
-    @validator("SQL_SERVER_DATABASE_URI", pre=True)
-    def assemble_sql_server_connection(
+    @validator("POSTGRESQL_DATABASE_URI", pre=True)
+    def assemble_postgresql_connection(
         cls,
         v: Optional[str],
         values: dict[str, Any]
@@ -71,23 +44,17 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v
         return URL.create(
-                "mssql+pyodbc",
-                username=values.get("SQL_SERVER_USR"),
-                password=values.get("SQL_SERVER_PWD"),
-                host=values.get("SQL_SERVER_HOST"),
-                port=values.get("SQL_SERVER_PORT"),
-                database=values.get("SQL_SERVER_DB"),
-                query=dict(
-                    driver='ODBC Driver 18 for SQL Server',
-                    TrustServerCertificate="yes",
-                    Encrypt="no")
+            "postgresql+asyncpg",
+            username=values.get("POSTGRESQL_PANEL_USR"),
+            password=values.get("POSTGRESQL_PANEL_PWD"),
+            host=values.get("POSTGRESQL_PANEL_URI"),
+            port=values.get("POSTGRESQL_PANEL_PORT"),
+            database=values.get("POSTGRESQL_PANEL_DB"),
         )
 
     RABBIT_ENVIRON: str = ""
     RABBIT_EXCHANGE: str = ""
     RABBIT_ROUTING_KEY: str = ""
-
-    URL_HUB: str = ""
 
     class Config:
         env_file = ".env"

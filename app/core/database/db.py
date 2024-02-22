@@ -15,10 +15,10 @@ class AsyncSessionMaker:
         self.__config = get_config()
 
     def get_engine(self) -> AsyncEngine:
-        
+        print(self.__config.POSTGRESQL_DATABASE_URI)
         try:
             return create_async_engine(
-                self.__config.POSTGRES_DATABASE_URI, echo=True
+                self.__config.POSTGRESQL_DATABASE_URI, echo=True
                 )
         except Exception as e:
             raise e
@@ -30,3 +30,6 @@ class AsyncSessionMaker:
         )
         async with session() as session:
             yield session
+
+
+async_session = AsyncSessionMaker()

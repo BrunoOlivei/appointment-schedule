@@ -53,8 +53,8 @@ class UsersActions:
             table_model=Permission
         )
         permissions_names = [permission.name for permission in permissions]
-        if user_in.permissions:
-            for permission in user_in.permissions:
+        if user_in.permission:
+            for permission in user_in.permission:
                 if permission.name not in permissions_names:
                     raise Exception("Permission not found")
         return await self._repo.create(

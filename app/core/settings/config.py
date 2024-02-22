@@ -45,11 +45,11 @@ class Settings(BaseSettings):
             return v
         return URL.create(
             "postgresql+asyncpg",
-            username=values.get("POSTGRESQL_PANEL_USR"),
-            password=values.get("POSTGRESQL_PANEL_PWD"),
-            host=values.get("POSTGRESQL_PANEL_URI"),
-            port=values.get("POSTGRESQL_PANEL_PORT"),
-            database=values.get("POSTGRESQL_PANEL_DB"),
+            username=values.get("POSTGRESQL_USR"),
+            password=values.get("POSTGRESQL_PWD"),
+            host=values.get("POSTGRESQL_URI"),
+            port=values.get("POSTGRESQL_PORT"),
+            database=values.get("POSTGRESQL_DB"),
         )
 
     RABBIT_ENVIRON: str = ""
@@ -60,15 +60,15 @@ class Settings(BaseSettings):
         env_file = ".env"
         case_sensitive = True
 
-        # @classmethod
-        # def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
-        #     if field_name == "CORS_ORIGINS":
-        #         return [origin for origin in raw_val.split(";")]
-        #     # The following line is ignored by mypy because:
-        #     # error: Type'[Config]' has no attribute 'json_loads',
-        #     # even though it is like the documentation:
-        #     # https://docs.pydantic.dev/latest/usage/settings/
-        #     return cls.json_loads(raw_val)  # type: ignore[attr-defined]
+        @classmethod
+        def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
+            if field_name == "CORS_ORIGINS":
+                return [origin for origin in raw_val.split(";")]
+            # The following line is ignored by mypy because:
+            # error: Type'[Config]' has no attribute 'json_loads',
+            # even though it is like the documentation:
+            # https://docs.pydantic.dev/latest/usage/settings/
+            return cls.json_loads(raw_val)  # type: ignore[attr-defined]
 
 
 @lru_cache()

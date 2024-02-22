@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession  # type: ignore
 from pydantic import conint
 
-from app.core.database.db import Session
+from app.core.database.db import async_session
 from app.utils.response import Responses
 from app.users.schemas.permissions import (
     Permission, PermissionBase, PermissionInDB, PermissionUpdateActive
@@ -16,7 +16,6 @@ from app.core.actions import (
     MAX_POSTGRES_INTEGER,
 )
 
-async_session = Session(driver="mysql")
 
 router = APIRouter(
     prefix="/permission",

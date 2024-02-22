@@ -189,3 +189,7 @@ pod.yaml
 /docs/img
 
 *.sh
+
+docker-compose.yml
+init.sql
+.dockerignore

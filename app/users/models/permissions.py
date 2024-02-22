@@ -79,11 +79,11 @@ class PermissionUser(Base):
         String(36), primary_key=True, default=uuid4
     )
     id_user: Mapped[str] = mapped_column(
-        String(36), ForeignKey("users.users.id"), nullable=False
+        String(36), ForeignKey("users.id"), nullable=False
     )
     ForeignKeyConstraint(
         ["id_user"],
-        ["users.users.id"],
+        ["users.id"],
         name="fk_permission_users_id_user",
     )
     id_permission: Mapped[str] = mapped_column(
@@ -91,7 +91,7 @@ class PermissionUser(Base):
     )
     ForeignKeyConstraint(
         ["id_permission"],
-        ["permissions.permission.id"],
+        ["permission.id"],
         name="fk_permission_users_id_permission",
     )
     is_active: Mapped[bool] = mapped_column(

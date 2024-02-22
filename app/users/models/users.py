@@ -1,12 +1,14 @@
 from datetime import datetime
 from uuid import uuid4
+from pydantic import UUID4
 
 from sqlalchemy import (
     String,
     Boolean,
     UniqueConstraint,
     DateTime,
-    PrimaryKeyConstraint
+    PrimaryKeyConstraint,
+    UUID,
 )
 from sqlalchemy.orm import (
     Mapped, mapped_column, relationship
@@ -19,7 +21,6 @@ class Users(Base):
     __tablename__ = "users"
 
     __table_args__ = (
-        UniqueConstraint("crm_user_id", name="uq_crm_user_id"),
         UniqueConstraint("mail", name="uq_mail"),
         PrimaryKeyConstraint("id", name="pk_users_id"),
     )
